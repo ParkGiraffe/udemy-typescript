@@ -12,9 +12,10 @@ console.log(person.name);
 // console.log(person.nickname);
 
 
-let favoriteActivites: string[];
-favoriteActivites = ["Sports", "Game"];
+let anyNumbers: any[] = ["1", 2];
 
+let favoriteActivites: string[] = ["Sports", "Game"];
 for (const hobby of favoriteActivites) {
-  console.log(hobby.toUpperCase);
+  console.log(hobby.toUpperCase());
+  // console.log(hobby.toFixed());
 }
