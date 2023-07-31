@@ -1,37 +1,20 @@
-const person = {
+const person: {
+  name: string;
+  age: number;
+  hobbies: string[];
+} = {
   name: "Giraffe",
   age: 22,
   hobbies: ["Sports", "Cooking"],
 };
 
+console.log(person.name);
+// console.log(person.nickname);
+
+
 let favoriteActivites: string[];
-favoriteActivites = ["Sports"];
+favoriteActivites = ["Sports", "Game"];
 
 for (const hobby of favoriteActivites) {
   console.log(hobby.toUpperCase);
 }
-
-console.log(person.name);
-
-// 중첩된 개체 및 타입
-const product = {
-  id: "abc1",
-  price: 12.99,
-  tags: ["great-offer", "hot-and-new"],
-  details: {
-    title: "Red Carpet",
-    description: "A great carpet - almost brand-new!",
-  },
-};
-
-/*
-{
-  id: string;
-  price: number;
-  tags: string[];
-  details: {
-    title: string;
-    description: string;
-  }
-}
-*/
