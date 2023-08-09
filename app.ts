@@ -1,14 +1,18 @@
-const person: {
-  name: string;
-  age: number;
-  hobbies: string[];
-  role : [number, string];
-  // role : readonly [number, string];
-} = {
+// const person: {
+//   name: string;
+//   age: number;
+//   hobbies: string[];
+//   role : [number, string];
+//   // role : readonly [number, string];
+// } = {
+
+enum Role {ADMIN = 5, READ_ONLY = 'hi', AUTHOR = 'he'};
+
+const person = {
   name: "Giraffe",
   age: 22,
   hobbies: ["Sports", "Cooking"],
-  role: [1, 'blogger'],
+  role: Role.ADMIN,
 };
 
 
