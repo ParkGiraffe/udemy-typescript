@@ -1,38 +1,16 @@
-// const person: {
-//   name: string;
-//   age: number;
-//   hobbies: string[];
-//   role : [number, string];
-//   // role : readonly [number, string];
-// } = {
+let uni: number | string | boolean;
+uni = 1;
+uni = "1";
+uni = false;
 
-enum Role {ADMIN = 5, READ_ONLY = 'hi', AUTHOR = 'he'};
+function add(n1: number | string, n2: number | string) {
+  let result: any;
 
-const person = {
-  name: "Giraffe",
-  age: 22,
-  hobbies: ["Sports", "Cooking"],
-  role: Role.ADMIN,
-};
+  if (typeof n1 === "number" && typeof n2 === "number") {
+    result = n1 + n2;
+  } else {
+    result = n1.toString() + n2.toString();
+  }
 
-
-// person.role[1] = '1'
-// person.role[1] = 1
-
-// person.role = [1, '1'];
-// person.role = [1, 1];
-// person.role = [1, '1', 1];
-
-// person.role.push(1)
-
-console.log(person.name);
-// console.log(person.nickname);
-
-
-let anyNumbers: any[] = ["1", 2];
-
-let favoriteActivites: string[] = ["Sports", "Game"];
-for (const hobby of favoriteActivites) {
-  console.log(hobby.toUpperCase());
-  // console.log(hobby.toFixed());
+  return result;
 }
