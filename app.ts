@@ -1,13 +1,16 @@
 let uni: number | string | boolean;
 let lit: "as" | "k" | 5 | true;
 
-lit = 'as';
-lit = 4
+type addable = number | string;
+type resultType = "as-number" | "as-string";
+
+lit = "as";
+// lit = 4
 
 function add(
-  n1: number | string,
-  n2: number | string,
-  resultType: "as-number" | "as-string"
+  n1: addable,
+  n2: addable,
+  resultType: resultType,
 ) {
   let result: any;
 
@@ -24,5 +27,4 @@ function add(
   return result;
 }
 
-
-add(0, 1, 'as-type')
+// add(0, 1, 'as-type')
