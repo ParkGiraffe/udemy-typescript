@@ -1,19 +1,7 @@
-
-function add(n1, n2) {
-  return n1 + n2;
+"use strict";
+let userInput;
+let userName;
+userInput = "max";
+if (typeof userInput === 'string') {
+    userName = userInput;
 }
-
-const number1 = "5";
-const number2 = 2.8;
-
-const result = add(number1, number2);
-console.log(result);
-
-const person = {
-  name: "Giraffe",
-  age: 22,
-  hobbies: ["Sports", "Cooking"],
-};
-
-console.log(person.name);
-console.log(person.nickname);
