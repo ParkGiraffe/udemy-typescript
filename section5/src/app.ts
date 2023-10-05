@@ -1,5 +1,6 @@
 class Department {
-  name: string;
+  public name: string;
+  private employees: string[] = [];
 
   constructor(n: string) {
     this.name = n;
@@ -10,12 +11,33 @@ class Department {
   describe(this: Department) {
     console.log("Department: " + this.name);
   }
+
+  addEmployees(newMember: string) {
+    // validation (유효성 검사 코드)
+    this.employees.push(newMember);
+  }
+
+  printEmployeeInformation() {
+    console.group(this.employees);
+  }
 }
 
-const accounting = new Department("Accounting");
+// const accounting = new Department("Accounting");
+
+// const accountingCopy = { describe: accounting.describe };
+// accountingCopy.describe();
 
 // this 매개변수에 실제로 값을 전달해주지 않아도 함수가 잘 실행된다.
-accounting.describe();
+// accounting.describe();
 
-const accountingCopy = { name: "DUMMY", describe: accounting.describe };
-accountingCopy.describe();
+// const accountingCopy = { name: "DUMMY", describe: accounting.describe };
+// accountingCopy.describe();
+
+// --- 5-62 ---
+
+const accounting = new Department("Accounting");
+// accounting.employees.push("giraffe");
+// accounting.employees.push("ah");
+// accounting.employees[0] = "park";
+accounting.addEmployees("hello");
+accounting.name = "giraffe";
