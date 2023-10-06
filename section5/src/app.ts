@@ -1,15 +1,15 @@
 class Department {
-  public name: string;
+  // public name: string;
   private employees: string[] = [];
 
-  constructor(n: string) {
-    this.name = n;
+  constructor(private id: string, public name: string) {
+    // this.name = n;
   }
 
   // 타입스크립트에서만 사용하는 특수한 매개변수로, 메소드에서 this 키워드를 매개변수로 전달한다. this의 타입은 원형이 되는 클래스를 지정해준다.
   // 그렇다고 this에 꼭 무언가를 전달할 필요는 없고, this가 무엇을 참조해야 하는 지 힌트를 알려주는 역할을 한다.
   describe(this: Department) {
-    console.log("Department: " + this.name);
+    console.log(`Department (${this.id}) : ${this.name}`);
   }
 
   addEmployees(newMember: string) {
@@ -35,7 +35,7 @@ class Department {
 
 // --- 5-62 ---
 
-const accounting = new Department("Accounting");
+const accounting = new Department("d1", "Accounting");
 // accounting.employees.push("giraffe");
 // accounting.employees.push("ah");
 // accounting.employees[0] = "park";
