@@ -1,8 +1,9 @@
 class Department {
   // public name: string;
+  // private readonly id: string;
   private employees: string[] = [];
 
-  constructor(private id: string, public name: string) {
+  constructor(private readonly id: string, public name: string) {
     // this.name = n;
   }
 
@@ -14,6 +15,7 @@ class Department {
 
   addEmployees(newMember: string) {
     // validation (유효성 검사 코드)
+    this.id = 'd1'
     this.employees.push(newMember);
   }
 
