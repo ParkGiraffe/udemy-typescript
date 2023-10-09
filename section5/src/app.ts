@@ -15,12 +15,32 @@ class Department {
 
   addEmployees(newMember: string) {
     // validation (유효성 검사 코드)
-    this.id = 'd1'
+    // this.id = 'd1'
     this.employees.push(newMember);
   }
 
   printEmployeeInformation() {
     console.group(this.employees);
+  }
+}
+
+class ITDepartment extends Department {
+  constructor(id: string, public admins: string[]) {
+    super(id, "IT");
+  }
+}
+
+class AccountingDepartment extends Department {
+  constructor(id: string, private reports: string[]) {
+    super(id, "Accounting");
+  }
+
+  addReport(text: string) {
+    this.reports.push(text);
+  }
+
+  printReports() {
+    console.log(this.reports);
   }
 }
 
@@ -37,9 +57,11 @@ class Department {
 
 // --- 5-62 ---
 
-const accounting = new Department("d1", "Accounting");
+const accounting = new AccountingDepartment("d1", []);
 // accounting.employees.push("giraffe");
 // accounting.employees.push("ah");
 // accounting.employees[0] = "park";
-accounting.addEmployees("hello");
-accounting.name = "giraffe";
+// accounting.addEmployees("hello");
+// accounting.name = "giraffe";
+accounting.addReport("hello");
+accounting.printReports();
