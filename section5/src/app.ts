@@ -1,7 +1,5 @@
 class Department {
-  // public name: string;
-  // private readonly id: string;
-  private employees: string[] = [];
+  protected employees: string[] = [];
 
   constructor(private readonly id: string, public name: string) {
     // this.name = n;
@@ -27,6 +25,11 @@ class Department {
 class ITDepartment extends Department {
   constructor(id: string, public admins: string[]) {
     super(id, "IT");
+  }
+
+  addEmployees(newMember: string) {
+    if (newMember === "giraffe") return;
+    this.employees.push(newMember);
   }
 }
 
