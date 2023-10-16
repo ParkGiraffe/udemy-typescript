@@ -1,5 +1,10 @@
 class Department {
   protected employees: string[] = [];
+  static fiscalYear = 2020;
+
+  static addEmployee (name: string) {
+    return {name : name}
+  }
 
   constructor(private readonly id: string, public name: string) {
     // this.name = n;
@@ -90,3 +95,10 @@ accounting.printReports();
 accounting.mostRecentReport = "Year End Report"; // set
 accounting.addEmployees("Something went wrong...");
 console.log(accounting.mostRecentReport); // get
+
+
+console.log(Math.PI); // output : 3.141592~
+console.log(Math.abs(-3.7)); // output : 3.7
+
+console.log(Department.fiscalYear); // output : 2020
+// console.log(accounting.fiscalYear)
