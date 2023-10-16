@@ -30,12 +30,11 @@ abstract class Department {
 }
 
 class ITDepartment extends Department {
-  describe(this: Department): void {
-    console.log("ITDepartmet");
-  }
-
   constructor(id: string, public admins: string[]) {
     super(id, "IT");
+  }
+  describe(this: Department): void {
+    console.log("ITDepartmet");
   }
 
   addEmployees(newMember: string) {
@@ -45,15 +44,26 @@ class ITDepartment extends Department {
 }
 
 class AccountingDepartment extends Department {
+  private static instance: AccountingDepartment;
+
+  private constructor(id: string, private reports: string[]) {
+    super(id, "Accounting");
+    this.lastReport = reports[0];
+  }
+
+  static getInstance() {
+    if (this.instance) {
+      return this.instance;
+    }
+    this.instance = new AccountingDepartment("d2", []);
+    return this.instance;
+  }
+
   describe(this: Department): void {
     console.log("AccountingDepartment");
   }
 
   private lastReport: string;
-  constructor(id: string, private reports: string[]) {
-    super(id, "Accounting");
-    this.lastReport = reports[0];
-  }
 
   get mostRecentReport() {
     if (this.lastReport) {
@@ -92,24 +102,28 @@ class AccountingDepartment extends Department {
 
 // --- 5-62 ---
 
-const accounting = new AccountingDepartment("d1", []);
+const accounting = AccountingDepartment.getInstance();
+const accounting2 = AccountingDepartment.getInstance();
+console.log(accounting, accounting2);
+console.log(accounting === accounting2);
+
 // accounting.employees.push("giraffe");
 // accounting.employees.push("ah");
 // accounting.employees[0] = "park";
-// accounting.addEmployees("hello");
-// accounting.name = "giraffe";
+accounting.addEmployees("hello");
+accounting.name = "giraffe";
 accounting.addReport("hello");
 accounting.printReports();
+accounting2.printReports();
 
-accounting.mostRecentReport = "Year End Report"; // set
-accounting.addEmployees("Something went wrong...");
-console.log(accounting.mostRecentReport); // get
+// accounting.mostRecentReport = "Year End Report"; // set
+// accounting.addEmployees("Something went wrong...");
+// console.log(accounting.mostRecentReport); // get
 
 console.log(Math.PI); // output : 3.141592~
 console.log(Math.abs(-3.7)); // output : 3.7
 
 console.log(Department.fiscalYear); // output : 2020
 // console.log(accounting.fiscalYear)
-
 
 // const department = new Department('de', 'name');
