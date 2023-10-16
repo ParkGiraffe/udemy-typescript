@@ -1,9 +1,11 @@
-class Department {
+abstract class Department {
+  abstract describe(this: Department): void;
+
   protected employees: string[] = [];
   static fiscalYear = 2020;
 
-  static addEmployee (name: string) {
-    return {name : name}
+  static addEmployee(name: string) {
+    return { name: name };
   }
 
   constructor(private readonly id: string, public name: string) {
@@ -12,9 +14,9 @@ class Department {
 
   // 타입스크립트에서만 사용하는 특수한 매개변수로, 메소드에서 this 키워드를 매개변수로 전달한다. this의 타입은 원형이 되는 클래스를 지정해준다.
   // 그렇다고 this에 꼭 무언가를 전달할 필요는 없고, this가 무엇을 참조해야 하는 지 힌트를 알려주는 역할을 한다.
-  describe(this: Department) {
-    console.log(`Department (${this.id}) : ${this.name}`);
-  }
+  // describe(this: Department) {
+  //   console.log(`Department (${this.id}) : ${this.name}`);
+  // }
 
   addEmployees(newMember: string) {
     // validation (유효성 검사 코드)
@@ -28,6 +30,10 @@ class Department {
 }
 
 class ITDepartment extends Department {
+  describe(this: Department): void {
+    console.log("ITDepartmet");
+  }
+
   constructor(id: string, public admins: string[]) {
     super(id, "IT");
   }
@@ -39,7 +45,15 @@ class ITDepartment extends Department {
 }
 
 class AccountingDepartment extends Department {
+  describe(this: Department): void {
+    console.log("AccountingDepartment");
+  }
+
   private lastReport: string;
+  constructor(id: string, private reports: string[]) {
+    super(id, "Accounting");
+    this.lastReport = reports[0];
+  }
 
   get mostRecentReport() {
     if (this.lastReport) {
@@ -53,11 +67,6 @@ class AccountingDepartment extends Department {
       throw new Error("Please pass in a valid value!");
     }
     this.addReport(value);
-  }
-
-  constructor(id: string, private reports: string[]) {
-    super(id, "Accounting");
-    this.lastReport = reports[0];
   }
 
   addReport(text: string) {
@@ -96,9 +105,11 @@ accounting.mostRecentReport = "Year End Report"; // set
 accounting.addEmployees("Something went wrong...");
 console.log(accounting.mostRecentReport); // get
 
-
 console.log(Math.PI); // output : 3.141592~
 console.log(Math.abs(-3.7)); // output : 3.7
 
 console.log(Department.fiscalYear); // output : 2020
 // console.log(accounting.fiscalYear)
+
+
+// const department = new Department('de', 'name');
