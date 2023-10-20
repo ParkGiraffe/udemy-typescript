@@ -1,5 +1,5 @@
 interface Greetable {
-  name: string;
+  readonly name: string;
   greet(phrase: string): void;
 }
 
@@ -16,4 +16,5 @@ class Person implements Greetable {
   }
 }
 
-const user1: Greetable = new Person('giraffe');
+const user1: Greetable = new Person("giraffe");
+// user1.name = 'giraffe'
