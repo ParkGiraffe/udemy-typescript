@@ -1,5 +1,12 @@
-interface Greetable {
+interface Named {
   readonly name: string;
+}
+
+interface Age {
+  readonly age: number;
+}
+
+interface Greetable extends Named, Age {
   greet(phrase: string): void;
 }
 
