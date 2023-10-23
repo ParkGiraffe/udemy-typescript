@@ -17,7 +17,7 @@ interface Age {
 }
 
 interface Greetable extends Named, Age {
-  greet(phrase?: string): void;
+  greet?(phrase?: string): void;
 }
 
 class Person implements Greetable {
@@ -39,5 +39,5 @@ class Person implements Greetable {
   }
 }
 
-const user1: Greetable = new Person();
+const user1: Person = new Person();
 user1.greet();
