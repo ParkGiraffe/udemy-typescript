@@ -95,3 +95,9 @@ const moveAnimal = (animal: Animal) => {
 };
 
 moveAnimal({ type: "bird", flyingSpeed: 10 });
+
+const userInputElement = document.getElementById("user-input");
+
+// if (userInputElement) {
+//   (userInputElement as HTMLInputElement).value = "empty";
+// }
