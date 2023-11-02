@@ -101,3 +101,7 @@ const userInputElement = document.getElementById("user-input");
 // if (userInputElement) {
 //   (userInputElement as HTMLInputElement).value = "empty";
 // }
+
+interface ErrorContainer { // { email: 'Not a valid email'}
+
+}
