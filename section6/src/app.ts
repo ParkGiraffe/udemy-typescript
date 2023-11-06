@@ -22,13 +22,22 @@ type Numeric = number;
 type Universal = Combinable & Numeric;
 // 유니온 타입끼리 교차시켜서, 교집함인 타입을 찾아낸다.
 
-const add = (a: Combinable, b: Combinable) => {
+
+function add (a: number, b: number) : number;
+function add (a: string, b: string) : string;
+function add (a: number, b: string) : string;
+function add (a: string, b: number) : string;
+function add (a: Combinable, b: Combinable) {
   if (typeof a === "string" || typeof b === "string") {
     return a.toString() + b.toString();
   }
   return a + b;
 };
 
+const pg = add("park", "giarffe");
+pg.split(" ");
+
+/*
 type UnknownEmployee = Employee | Admin;
 
 const printEmployeeInformation = (emp: UnknownEmployee) => {
@@ -111,3 +120,4 @@ const errorBag: ErrorContainer = {
   username: "Must start with a capital character!",
   // error: 1,
 };
+*/
