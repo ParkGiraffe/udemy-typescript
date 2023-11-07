@@ -128,3 +128,5 @@ const fetchUserData = {
 };
 
 console.log(fetchUserData?.job?.title)
+
+const userInput = null;
