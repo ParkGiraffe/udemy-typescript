@@ -35,6 +35,4 @@ countAndDescription('hello');
 countAndDescription([1, 2]);
 
 // countAndDescription({a: 'a'})
-
-
 countAndDescription({a: 'a', length: 1})
