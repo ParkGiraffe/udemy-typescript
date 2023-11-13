@@ -135,4 +135,3 @@ const storedData = userInput ?? "DEFAULT";
 
 // falsy value : [null, undefined, 0, ''(빈 String)]일 경우에 false로 인식되는 value를 말합니다.
 // 여기서 0과 ''를 제외하면 Nullish value가 됩니다.
-// 출처: https://arnopark.tistory.com/523 [GiraffePark:티스토리]
