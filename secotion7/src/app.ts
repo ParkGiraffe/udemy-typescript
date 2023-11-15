@@ -13,11 +13,9 @@ const mergedObj = merge({ name: "Max", hobbies: ["game"] }, { age: 30 });
 mergedObj.age;
 mergedObj.hobbies;
 
-
 interface Lengthy {
   length: number;
 }
-
 
 function countAndDescription<T extends Lengthy>(element: T) {
   let descriptionText = "Got no value";
@@ -30,9 +28,19 @@ function countAndDescription<T extends Lengthy>(element: T) {
   return [element, descriptionText];
 }
 
-
-countAndDescription('hello');
+countAndDescription("hello");
 countAndDescription([1, 2]);
 
 // countAndDescription({a: 'a'})
-countAndDescription({a: 'a', length: 1})
+countAndDescription({ a: "a", length: 1 });
+
+function extractAndConvert<T extends object, U extends keyof T>(
+  obj: T,
+  key: U
+) {
+  return "Value" + obj[key];
+}
+
+extractAndConvert({ name: 'giraffe' }, 'name');
+
+
