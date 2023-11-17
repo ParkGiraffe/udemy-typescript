@@ -46,7 +46,7 @@ extractAndConvert({ name: "giraffe" }, "name");
 class DataStorage<T extends string | number | boolean> {
   private data: T[] = [];
 
-  addItem(item: T) {
+  addItem<U extends T>(item: U) {
     this.data.push(item);
   }
 
@@ -71,3 +71,21 @@ objectStorage.addItem({name: 'Max'});
 objectStorage.removeItem({name: 'Max'});
 
 */
+
+interface CourseGoal {
+  title: string;
+  description: string;
+  completeUntil: Date;
+}
+
+function createCourseGoal(
+  title: string,
+  description: string,
+  date: Date
+): CourseGoal {
+  let courseGoal: Partial<CourseGoal> = {};
+  courseGoal.title = title;
+  courseGoal.description = description;
+  courseGoal.completeUntil = date;
+  return courseGoal as CourseGoal;
+}
