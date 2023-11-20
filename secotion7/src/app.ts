@@ -89,3 +89,7 @@ function createCourseGoal(
   courseGoal.completeUntil = date;
   return courseGoal as CourseGoal;
 }
+
+const names: Readonly<string[]> = ["Park", "Giraffe"];
+// names.push('a');
+// names.pop()
