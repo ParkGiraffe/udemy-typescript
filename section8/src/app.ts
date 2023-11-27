@@ -1,4 +1,5 @@
 function Logger(logString: string) {
+  console.log("LOGGER FACTORY");
   return function (constructor: Function) {
     console.log(logString);
     console.log(constructor);
@@ -6,6 +7,7 @@ function Logger(logString: string) {
 }
 
 function WithTemplate(template: string, hookId: string) {
+  console.log("TEMPLATE FACTORY");
   return function (constructor: any) {
     const hookEl = document.getElementById(hookId);
     const p = new constructor();
