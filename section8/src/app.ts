@@ -8,9 +8,12 @@ function Logger(logString: string) {
 
 function WithTemplate(template: string, hookId: string) {
   console.log("TEMPLATE FACTORY");
-  return function (originalConstructor: any) {
+
+  return function <T extends { new (...args: any[]): { name: string } }>(
+    originalConstructor: T
+  ) {
     return class extends originalConstructor {
-      constructor() {
+      constructor(..._: any[]) {
         super();
         console.log("Rendering template");
         const hookEl = document.getElementById(hookId);
