@@ -108,6 +108,11 @@ const p = new Printer();
 const button = document.querySelector("button")!;
 button.addEventListener("click", p.showMessage);
 
+
+ 
+
+
+
 function Required() {}
 function PositiveNumber() {}
 function validate(obj: object) {}
