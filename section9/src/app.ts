@@ -7,6 +7,10 @@ class ProjectInput {
   hostElement: HTMLDivElement;
   element: HTMLFormElement;
 
+  titleInputElement: HTMLInputElement;
+  descriptionInputElement: HTMLInputElement;
+  peopleInputElement: HTMLInputElement;
+
   constructor() {
     this.templateElement = document.getElementById(
       "project-input"
@@ -20,8 +24,31 @@ class ProjectInput {
       true
     );
     this.element = importedNode.firstElementChild as HTMLFormElement;
+    this.element.id = "user-input"; // html element의 id도 여기서 지정해줄 수 있다.
 
+    this.titleInputElement = this.element.querySelector(
+      "#title"
+    ) as HTMLInputElement; // element(form) 안에서 id가 title인 input element를 찾는다.
+    this.descriptionInputElement = this.element.querySelector(
+      "#description"
+    ) as HTMLInputElement;
+    this.peopleInputElement = this.element.querySelector(
+      "#people"
+    ) as HTMLInputElement;
+
+    this.configure();
     this.attach();
+  }
+
+  // form이 submit 될 때 작동할 핸들러 함수F
+  private submitHandler(event: Event) {
+    event.preventDefault();
+    console.log(this.titleInputElement.value);
+  }
+
+  // form이 submit 될 때 작동할 핸들러 함수를 form과 연결
+  private configure() {
+    this.element.addEventListener("submit", this.submitHandler.bind(this));
   }
 
   // 템플릿을 <div id='app'></div>에 추가하는 함수
