@@ -2,6 +2,20 @@
 
 // 이 템플릿을 TS를 통해 렌더링한다. 이 과정을 class를 이용해서 구현한다.
 
+// autobind decorator
+function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+  const adjDescriptor: PropertyDescriptor = {
+    configurable: true,
+    get() {
+      const boundFn = originalMethod.bind(this);
+      return boundFn;
+    },
+  };
+
+  return adjDescriptor;
+}
+
 class ProjectInput {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
@@ -41,6 +55,7 @@ class ProjectInput {
   }
 
   // form이 submit 될 때 작동할 핸들러 함수F
+  @autobind
   private submitHandler(event: Event) {
     event.preventDefault();
     console.log(this.titleInputElement.value);
@@ -48,7 +63,8 @@ class ProjectInput {
 
   // form이 submit 될 때 작동할 핸들러 함수를 form과 연결
   private configure() {
-    this.element.addEventListener("submit", this.submitHandler.bind(this));
+    // this.element.addEventListener("submit", this.submitHandler.bind(this));
+    this.element.addEventListener("submit", this.submitHandler);
   }
 
   // 템플릿을 <div id='app'></div>에 추가하는 함수
