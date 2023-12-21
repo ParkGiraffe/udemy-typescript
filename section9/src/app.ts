@@ -1,3 +1,40 @@
+// Validation
+interface Validatable {
+  value: string | number;
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?: number;
+}
+
+function validate(validatableInput: Validatable) {
+  let isValid = true;
+  const { value, required, minLength, maxLength, min, max } = validatableInput;
+
+  if (required) {
+    isValid = isValid && value.toString().trim.length !== 0;
+  }
+
+  if (minLength != null && typeof value === "string") {
+    isValid = isValid && value.length >= minLength;
+  }
+
+  if (maxLength != null && typeof value === "string") {
+    isValid = isValid && value.length <= maxLength;
+  }
+
+  if (min != null && typeof value === "number") {
+    isValid = isValid && value >= min;
+  }
+
+  if (max != null && typeof value === "number") {
+    isValid = isValid && value <= max;
+  }
+
+  return isValid;
+}
+
 // <template></template> : temlplate 내부 요소는 페이지를 불러오는 순간 즉시 그려지지는 않지만, 이후 JS(TS)를 사용해 인스턴스를 생성할 수 있는 HTML코드를 담을 방법을 제공한다. -> 템플릿은 콘텐츠 조각을 나중에 사용하기 위해 담아놓는 컨테이너로 생각해라.
 
 // 이 템플릿을 TS를 통해 렌더링한다. 이 과정을 class를 이용해서 구현한다.
@@ -60,10 +97,28 @@ class ProjectInput {
     const enteredDescription = this.descriptionInputElement.value;
     const enteredPeople = this.peopleInputElement.value;
 
+    const titleValidatable: Validatable = {
+      value: enteredTitle,
+      required: true,
+    };
+
+    const descriptionValidatable: Validatable = {
+      value: enteredDescription,
+      required: true,
+      minLength: 5,
+    };
+
+    const peopleValidatable: Validatable = {
+      value: +enteredPeople,
+      required: true,
+      min: 1,
+      max: 5,
+    };
+
     if (
-      enteredTitle.trim().length === 0 ||
-      enteredDescription.trim().length === 0 ||
-      enteredPeople.trim().length === 0
+      !validate(titleValidatable) ||
+      !validate(descriptionValidatable) ||
+      !validate(peopleValidatable)
     ) {
       alert("Invalid input, please try again!");
       return;
