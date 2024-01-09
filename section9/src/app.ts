@@ -51,7 +51,7 @@ function validate(validatableInput: Validatable) {
   const { value, required, minLength, maxLength, min, max } = validatableInput;
 
   if (required) {
-    isValid = isValid && value.toString().trim.length !== 0;
+    isValid = isValid && value.toString().trim().length !== 0;
   }
 
   if (minLength != null && typeof value === "string") {
@@ -122,7 +122,7 @@ class ProjectList {
   }
 
   private renderList() {
-    const listEl = document.querySelector(
+    const listEl = document.getElementById(
       `${this.type}-projects-list`
     ) as HTMLUListElement;
 
@@ -138,7 +138,7 @@ class ProjectList {
     this.element.querySelector("ul")!.id = listId;
     this.element.querySelector(
       "h2"
-    )!.textContent = `${this.type.toUpperCase} PROJECTS`;
+    )!.textContent = `${this.type.toUpperCase()} PROJECTS`;
   }
 
   // 템플릿을 <div id='app'></div>에 추가하는 함수
@@ -214,6 +214,8 @@ class ProjectInput {
       !validate(descriptionValidatable) ||
       !validate(peopleValidatable)
     ) {
+      console.log(enteredTitle, enteredDescription, enteredPeople);
+      console.log(enteredTitle, enteredDescription, enteredPeople);
       alert("Invalid input, please try again!");
       return;
     } else {
