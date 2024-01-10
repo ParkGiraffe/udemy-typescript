@@ -1,7 +1,24 @@
+enum ProjectStatus {
+  Active,
+  Finished,
+}
+
+class Proejct {
+  constructor(
+    public id: string,
+    public title: string,
+    public description: string,
+    public people: number,
+    public statuss: ProjectStatus
+  ) {}
+}
+
+type Listner = (items: Proejct[]) => void;
+
 // Project State (with Singletone Class)
 class ProjectState {
-  private listeners: any[] = []; // 리스너 함수가 담긴 배열 <- state가 변경되면 UI가 변경될 수 있도록 계속 구독하는 리스너 함수 모음
-  private projects: any[] = [];
+  private listeners: Listner[] = []; // 리스너 함수가 담긴 배열 <- state가 변경되면 UI가 변경될 수 있도록 계속 구독하는 리스너 함수 모음
+  private projects: Proejct[] = [];
   private static instance: ProjectState;
 
   private constructor() {}
@@ -12,17 +29,18 @@ class ProjectState {
     return this.instance;
   }
 
-  addListener(listenerFn: Function) {
+  addListener(listenerFn: Listner) {
     this.listeners.push(listenerFn);
   }
 
   addProject(title: string, desc: string, numOfPeople: number) {
-    const newProject = {
-      id: Math.random().toString(),
-      title: title,
-      description: desc,
-      people: numOfPeople,
-    };
+    const newProject = new Proejct(
+      Math.random().toString(),
+      title,
+      desc,
+      numOfPeople,
+      ProjectStatus.Active
+    );
 
     this.projects.push(newProject);
     for (const listenerFn of this.listeners) {
@@ -95,7 +113,7 @@ class ProjectList {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
   element: HTMLElement;
-  assignProjects: any[];
+  assignProjects: Proejct[];
 
   constructor(private type: "active" | "finished") {
     this.templateElement = document.getElementById(
@@ -112,7 +130,7 @@ class ProjectList {
     this.element = importedNode.firstElementChild as HTMLElement;
     this.element.id = `${this.type}-projects`; // html element의 id도 여기서 지정해줄 수 있다.
 
-    projectState.addListener((projects: any[]) => {
+    projectState.addListener((projects: Proejct[]) => {
       this.assignProjects = projects;
       this.renderList();
     });
@@ -214,8 +232,6 @@ class ProjectInput {
       !validate(descriptionValidatable) ||
       !validate(peopleValidatable)
     ) {
-      console.log(enteredTitle, enteredDescription, enteredPeople);
-      console.log(enteredTitle, enteredDescription, enteredPeople);
       alert("Invalid input, please try again!");
       return;
     } else {
