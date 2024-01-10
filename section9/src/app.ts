@@ -9,7 +9,7 @@ class Proejct {
     public title: string,
     public description: string,
     public people: number,
-    public statuss: ProjectStatus
+    public status: ProjectStatus
   ) {}
 }
 
@@ -131,7 +131,12 @@ class ProjectList {
     this.element.id = `${this.type}-projects`; // html element의 id도 여기서 지정해줄 수 있다.
 
     projectState.addListener((projects: Proejct[]) => {
-      this.assignProjects = projects;
+      const relevantProjects = projects.filter((prjItem) => {
+        if (this.type === "active")
+          return prjItem.status === ProjectStatus.Active;
+        else return prjItem.status === ProjectStatus.Finished;
+      });
+      this.assignProjects = relevantProjects;
       this.renderList();
     });
 
@@ -144,6 +149,7 @@ class ProjectList {
       `${this.type}-projects-list`
     ) as HTMLUListElement;
 
+    listEl.innerHTML = "";
     for (const prjItem of this.assignProjects) {
       const listItem = document.createElement("li");
       listItem.textContent = prjItem.title;
