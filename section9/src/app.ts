@@ -13,24 +13,29 @@ class Proejct {
   ) {}
 }
 
-type Listner = (items: Proejct[]) => void;
+type Listener<T> = (items: T[]) => void;
+
+class State<T> {
+  protected listeners: Listener<T>[] = []; // 리스너 함수가 담긴 배열 <- state가 변경되면 UI가 변경될 수 있도록 계속 구독하는 리스너 함수 모음
+
+  addListener(listenerFn: Listener<T>) {
+    this.listeners.push(listenerFn);
+  }
+}
 
 // Project State (with Singletone Class)
-class ProjectState {
-  private listeners: Listner[] = []; // 리스너 함수가 담긴 배열 <- state가 변경되면 UI가 변경될 수 있도록 계속 구독하는 리스너 함수 모음
+class ProjectState extends State<Proejct> {
   private projects: Proejct[] = [];
   private static instance: ProjectState;
 
-  private constructor() {}
+  private constructor() {
+    super();
+  }
 
   static getInstance() {
     if (this.instance) return this.instance;
     this.instance = new ProjectState();
     return this.instance;
-  }
-
-  addListener(listenerFn: Listner) {
-    this.listeners.push(listenerFn);
   }
 
   addProject(title: string, desc: string, numOfPeople: number) {
@@ -109,27 +114,57 @@ function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
   return adjDescriptor;
 }
 
-class ProjectList {
+abstract class Component<T extends HTMLElement, U extends HTMLElement> {
   templateElement: HTMLTemplateElement;
-  hostElement: HTMLDivElement;
-  element: HTMLElement;
-  assignProjects: Proejct[];
+  hostElement: T;
+  element: U;
 
-  constructor(private type: "active" | "finished") {
+  constructor(
+    templateId: string,
+    hostElementId: string,
+    insertAtStart: boolean,
+    newElementId?: string
+  ) {
     this.templateElement = document.getElementById(
-      "project-list"
+      templateId
     )! as HTMLTemplateElement;
-    this.hostElement = document.getElementById("app")! as HTMLDivElement;
-    this.assignProjects = [];
+    this.hostElement = document.getElementById(hostElementId)! as T;
 
     // <template></template>의 첫 번째 하위 element인 <form></form>을 가져옴. (이걸 app div에 넣어줘야 함)
     const importedNode = document.importNode(
       this.templateElement.content,
       true
     );
-    this.element = importedNode.firstElementChild as HTMLElement;
-    this.element.id = `${this.type}-projects`; // html element의 id도 여기서 지정해줄 수 있다.
+    this.element = importedNode.firstElementChild as U;
+    if (newElementId) this.element.id = newElementId; // html element의 id도 여기서 지정해줄 수 있다.
 
+    this.attach(insertAtStart);
+  }
+
+  // 템플릿을 <div id='app'></div>에 추가하는 함수
+  private attach(insertAtBeginning: boolean) {
+    this.hostElement.insertAdjacentElement(
+      insertAtBeginning ? "afterbegin" : "beforeend",
+      this.element
+    );
+  }
+
+  abstract configure(): void;
+  abstract renderContent(): void;
+}
+
+class ProjectList extends Component<HTMLDivElement, HTMLElement> {
+  assignProjects: Proejct[];
+
+  constructor(private type: "active" | "finished") {
+    super("project-list", "app", false, `${type}-projects`);
+    this.assignProjects = [];
+
+    this.configure();
+    this.renderContent();
+  }
+
+  configure() {
     projectState.addListener((projects: Proejct[]) => {
       const relevantProjects = projects.filter((prjItem) => {
         if (this.type === "active")
@@ -139,9 +174,14 @@ class ProjectList {
       this.assignProjects = relevantProjects;
       this.renderList();
     });
+  }
 
-    this.attach();
-    this.renderContent();
+  renderContent() {
+    const listId = `${this.type}-projects-list`;
+    this.element.querySelector("ul")!.id = listId;
+    this.element.querySelector(
+      "h2"
+    )!.textContent = `${this.type.toUpperCase()} PROJECTS`;
   }
 
   private renderList() {
@@ -156,44 +196,15 @@ class ProjectList {
       listEl.appendChild(listItem);
     }
   }
-
-  private renderContent() {
-    const listId = `${this.type}-projects-list`;
-    this.element.querySelector("ul")!.id = listId;
-    this.element.querySelector(
-      "h2"
-    )!.textContent = `${this.type.toUpperCase()} PROJECTS`;
-  }
-
-  // 템플릿을 <div id='app'></div>에 추가하는 함수
-  private attach() {
-    this.hostElement.insertAdjacentElement("beforeend", this.element);
-  }
 }
 
-class ProjectInput {
-  templateElement: HTMLTemplateElement;
-  hostElement: HTMLDivElement;
-  element: HTMLFormElement;
-
+class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
   titleInputElement: HTMLInputElement;
   descriptionInputElement: HTMLInputElement;
   peopleInputElement: HTMLInputElement;
 
   constructor() {
-    this.templateElement = document.getElementById(
-      "project-input"
-    )! as HTMLTemplateElement;
-
-    this.hostElement = document.getElementById("app")! as HTMLDivElement;
-
-    // <template></template>의 첫 번째 하위 element인 <form></form>을 가져옴. (이걸 app div에 넣어줘야 함)
-    const importedNode = document.importNode(
-      this.templateElement.content,
-      true
-    );
-    this.element = importedNode.firstElementChild as HTMLFormElement;
-    this.element.id = "user-input"; // html element의 id도 여기서 지정해줄 수 있다.
+    super("project-input", "app", true, "user-input");
 
     this.titleInputElement = this.element.querySelector(
       "#title"
@@ -206,8 +217,15 @@ class ProjectInput {
     ) as HTMLInputElement;
 
     this.configure();
-    this.attach();
   }
+
+  // form이 submit 될 때 작동할 핸들러 함수를 form과 연결
+  configure() {
+    // this.element.addEventListener("submit", this.submitHandler.bind(this));
+    this.element.addEventListener("submit", this.submitHandler);
+  }
+
+  renderContent(): void {}
 
   private gatherUserInput(): [string, string, number] | void {
     // 튜플 형태로 저장, 만약 입력값이 유효성에 어긋나면 void
@@ -223,14 +241,14 @@ class ProjectInput {
     const descriptionValidatable: Validatable = {
       value: enteredDescription,
       required: true,
-      minLength: 5,
+      minLength: 1,
     };
 
     const peopleValidatable: Validatable = {
       value: +enteredPeople,
       required: true,
       min: 1,
-      max: 5,
+      max: 50000,
     };
 
     if (
@@ -262,17 +280,6 @@ class ProjectInput {
       projectState.addProject(title, desc, people);
       this.clearInput();
     }
-  }
-
-  // form이 submit 될 때 작동할 핸들러 함수를 form과 연결
-  private configure() {
-    // this.element.addEventListener("submit", this.submitHandler.bind(this));
-    this.element.addEventListener("submit", this.submitHandler);
-  }
-
-  // 템플릿을 <div id='app'></div>에 추가하는 함수
-  private attach() {
-    this.hostElement.insertAdjacentElement("afterbegin", this.element);
   }
 }
 
