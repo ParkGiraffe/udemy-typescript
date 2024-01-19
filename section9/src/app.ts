@@ -1,121 +1,13 @@
-/// <reference path='drag-drop-interface.ts' />
-/// <reference path='project-model.ts' />
+/// <reference path='models/drag-drop.ts' />
+/// <reference path='models/project.ts' />
+/// <reference path='state/project-state.ts' />
+/// <reference path='util/validation.ts' />
+/// <reference path='decorators/autobind.ts' />
 
 namespace App {
-  type Listener<T> = (items: T[]) => void;
-
-  class State<T> {
-    protected listeners: Listener<T>[] = []; // 리스너 함수가 담긴 배열 <- state가 변경되면 UI가 변경될 수 있도록 계속 구독하는 리스너 함수 모음
-
-    addListener(listenerFn: Listener<T>) {
-      this.listeners.push(listenerFn);
-    }
-  }
-
-  // Project State (with Singletone Class)
-  class ProjectState extends State<Proejct> {
-    private projects: Proejct[] = [];
-    private static instance: ProjectState;
-
-    private constructor() {
-      super();
-    }
-
-    static getInstance() {
-      if (this.instance) return this.instance;
-      this.instance = new ProjectState();
-      return this.instance;
-    }
-
-    addProject(title: string, desc: string, numOfPeople: number) {
-      const newProject = new Proejct(
-        Math.random().toString(),
-        title,
-        desc,
-        numOfPeople,
-        ProjectStatus.Active
-      );
-
-      this.projects.push(newProject);
-      this.updateListeners();
-    }
-
-    moveProject(projectId: string, newStatus: ProjectStatus) {
-      const proejct = this.projects.find((prj) => prj.id === projectId);
-
-      if (proejct && proejct.status !== newStatus) {
-        proejct.status = newStatus;
-        this.updateListeners();
-      }
-    }
-
-    private updateListeners() {
-      for (const listenerFn of this.listeners) {
-        // 프로젝트가 추가되면, 리스너함수를 작동시켜 UI가 모두 갱신되게 끔 한다.
-        listenerFn(this.projects.slice()); // slice()를 해주는 이유 : 원본을 넣어주는 게 아니라, 복사본을 넣어줌으로써, 리스너함수에서 원본 배열에 수정/조작/손상이 안 가게 끔 한다. 만약 원본 참조값을 넘겨주면, 리스너함수에서 알 수 없는 오류가 발생할 수 있다.
-      }
-    }
-  }
-
-  const projectState = ProjectState.getInstance();
-
-  // Validation
-  interface Validatable {
-    value: string | number;
-    required?: boolean;
-    minLength?: number;
-    maxLength?: number;
-    min?: number;
-    max?: number;
-  }
-
-  function validate(validatableInput: Validatable) {
-    let isValid = true;
-
-    // 비구조화를 이용해서 좀 더 보기 편하게 수정
-    const { value, required, minLength, maxLength, min, max } =
-      validatableInput;
-
-    if (required) {
-      isValid = isValid && value.toString().trim().length !== 0;
-    }
-
-    if (minLength != null && typeof value === "string") {
-      isValid = isValid && value.length >= minLength;
-    }
-
-    if (maxLength != null && typeof value === "string") {
-      isValid = isValid && value.length <= maxLength;
-    }
-
-    if (min != null && typeof value === "number") {
-      isValid = isValid && value >= min;
-    }
-
-    if (max != null && typeof value === "number") {
-      isValid = isValid && value <= max;
-    }
-
-    return isValid;
-  }
-
   // <template></template> : temlplate 내부 요소는 페이지를 불러오는 순간 즉시 그려지지는 않지만, 이후 JS(TS)를 사용해 인스턴스를 생성할 수 있는 HTML코드를 담을 방법을 제공한다. -> 템플릿은 콘텐츠 조각을 나중에 사용하기 위해 담아놓는 컨테이너로 생각해라.
 
   // 이 템플릿을 TS를 통해 렌더링한다. 이 과정을 class를 이용해서 구현한다.
-
-  // autobind decorator
-  function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
-    const originalMethod = descriptor.value;
-    const adjDescriptor: PropertyDescriptor = {
-      configurable: true,
-      get() {
-        const boundFn = originalMethod.bind(this);
-        return boundFn;
-      },
-    };
-
-    return adjDescriptor;
-  }
 
   abstract class Component<T extends HTMLElement, U extends HTMLElement> {
     templateElement: HTMLTemplateElement;
