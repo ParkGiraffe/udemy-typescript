@@ -1,58 +1,57 @@
-namespace App {
-  type Listener<T> = (items: T[]) => void;
+import { Project, ProjectStatus } from '../models/project.js';
 
-  class State<T> {
-    protected listeners: Listener<T>[] = []; // 리스너 함수가 담긴 배열 <- state가 변경되면 UI가 변경될 수 있도록 계속 구독하는 리스너 함수 모음
+// Project State Management
+type Listener<T> = (items: T[]) => void;
 
-    addListener(listenerFn: Listener<T>) {
-      this.listeners.push(listenerFn);
-    }
+class State<T> {
+  protected listeners: Listener<T>[] = [];
+
+  addListener(listenerFn: Listener<T>) {
+    this.listeners.push(listenerFn);
+  }
+}
+
+export class ProjectState extends State<Project> {
+  private projects: Project[] = [];
+  private static instance: ProjectState;
+
+  private constructor() {
+    super();
   }
 
-  // Project State (with Singletone Class)
-  export class ProjectState extends State<Proejct> {
-    private projects: Proejct[] = [];
-    private static instance: ProjectState;
-
-    private constructor() {
-      super();
-    }
-
-    static getInstance() {
-      if (this.instance) return this.instance;
-      this.instance = new ProjectState();
+  static getInstance() {
+    if (this.instance) {
       return this.instance;
     }
+    this.instance = new ProjectState();
+    return this.instance;
+  }
 
-    addProject(title: string, desc: string, numOfPeople: number) {
-      const newProject = new Proejct(
-        Math.random().toString(),
-        title,
-        desc,
-        numOfPeople,
-        ProjectStatus.Active
-      );
+  addProject(title: string, description: string, numOfPeople: number) {
+    const newProject = new Project(
+      Math.random().toString(),
+      title,
+      description,
+      numOfPeople,
+      ProjectStatus.Active
+    );
+    this.projects.push(newProject);
+    this.updateListeners();
+  }
 
-      this.projects.push(newProject);
+  moveProject(projectId: string, newStatus: ProjectStatus) {
+    const project = this.projects.find(prj => prj.id === projectId);
+    if (project && project.status !== newStatus) {
+      project.status = newStatus;
       this.updateListeners();
-    }
-
-    moveProject(projectId: string, newStatus: ProjectStatus) {
-      const proejct = this.projects.find((prj) => prj.id === projectId);
-
-      if (proejct && proejct.status !== newStatus) {
-        proejct.status = newStatus;
-        this.updateListeners();
-      }
-    }
-
-    private updateListeners() {
-      for (const listenerFn of this.listeners) {
-        // 프로젝트가 추가되면, 리스너함수를 작동시켜 UI가 모두 갱신되게 끔 한다.
-        listenerFn(this.projects.slice()); // slice()를 해주는 이유 : 원본을 넣어주는 게 아니라, 복사본을 넣어줌으로써, 리스너함수에서 원본 배열에 수정/조작/손상이 안 가게 끔 한다. 만약 원본 참조값을 넘겨주면, 리스너함수에서 알 수 없는 오류가 발생할 수 있다.
-      }
     }
   }
 
-  export const projectState = ProjectState.getInstance();
+  private updateListeners() {
+    for (const listenerFn of this.listeners) {
+      listenerFn(this.projects.slice());
+    }
+  }
 }
+
+export const projectState = ProjectState.getInstance();
