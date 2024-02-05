@@ -3,9 +3,11 @@ import axios from "axios";
 const form = document.querySelector("form")!;
 const addressInput = document.getElementById("address")! as HTMLInputElement;
 
-const GOOGLE_API_KEY = "example";
+// const GOOGLE_API_KEY = "secret";
 
-type GoogleGeocodingResponse = { // api에서 전달받은 데이터 중, 사용할 데이터만 추출해서 제네릭타입으로 지정
+// declare var google: any;
+
+type GoogleGeocodingResponse = {
   results: { geometry: { location: { lat: number; lng: number } } }[];
   status: "OK" | "ZERO_RESULTS";
 };
@@ -20,13 +22,19 @@ function searchAddressHandler(event: Event) {
         enteredAddress
       )}&key=${GOOGLE_API_KEY}`
     )
-    .then((response) => {
+    .then(response => {
       if (response.data.status !== "OK") {
         throw new Error("Could not fetch location!");
       }
       const coordinates = response.data.results[0].geometry.location;
+      const map = new google.maps.Map(document.getElementById("map"), {
+        center: coordinates,
+        zoom: 16
+      }); 
+
+      new google.maps.Marker({ position: coordinates, map: map });
     })
-    .catch((err) => {
+    .catch(err => {
       alert(err.message);
       console.log(err);
     });
